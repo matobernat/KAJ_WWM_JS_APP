@@ -1,0 +1,15 @@
+{
+  "name": "kaj",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:matobernat/KAJ_WWM_JS_APP.git",
+  "author": "Martin",
+  "license": "MIT",
+  "scripts": {
+    "start": "yarn parcel src/index.html"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "2.6.0",
+    "parcel": "^2.6.0"
+  }
+}
