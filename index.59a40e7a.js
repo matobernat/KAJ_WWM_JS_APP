@@ -503,6 +503,57 @@ function hmrAcceptRun(bundle, id) {
 }
 
 },{}],"8lRBv":[function(require,module,exports) {
+var _login = require("./modules/Login");
+const loginFunctions = new (0, _login.Login)();
+window.onload = ()=>{
+    window.location.hash = "login";
+    loginFunctions.handleMenu();
+};
+
+},{"./modules/Login":"eZHT5"}],"eZHT5":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Login", ()=>Login);
+class Login {
+    handleMenu() {
+        const menu = document.querySelector("aside");
+        const loginButton = document.querySelector("#login-button");
+        menu.classList.add("hide");
+        loginButton.addEventListener("click", ()=>{
+            menu.classList.remove("hide");
+        });
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, "__esModule", {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
 
 },{}]},["5uAhr","8lRBv"], "8lRBv", "parcelRequiree6ef")
 

@@ -2,4 +2,21 @@ body {
   background: pink;
 }
 
+main {
+  display: none;
+}
+
+main:target {
+  display: block;
+}
+
+aside.hide {
+  display: none;
+}
+
+.login-form {
+  background: red;
+  padding: 30px;
+}
+
 /*# sourceMappingURL=index.fcb3f8e3.css.map */
