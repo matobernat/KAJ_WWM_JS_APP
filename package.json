@@ -5,10 +5,10 @@
   "author": "Martin",
   "license": "MIT",
   "scripts": {
-    "start": "yarn parcel src/index.html",
+    "start": "npx parcel src/index.html",
     "build": "parcel build ./src/index.html --public-url ./",
     "deploy": "gh-pages -d dist",
-    "build-deploy": "yarn run build && yarn run deploy"
+    "build-deploy": "npm run build && npm run deploy"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "2.6.0",
