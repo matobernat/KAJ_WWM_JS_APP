@@ -1,7 +1,4 @@
 main {
-  display: none;
-
-  &:target {
-    display: block;
-  }
+  display: flex;
+  width: 100%;
 }

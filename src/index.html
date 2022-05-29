@@ -1,64 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>KAJ</title>
-  <link rel="stylesheet" href="scss/app.scss"/>
-  <script type="module" src="js/app.js"></script>
+    <meta charset="UTF-8">
+    <title>KAJ</title>
+    <link rel="stylesheet" href="scss/app.scss"/>
+    <script type="module" src="js/app.js"></script>
+
+    <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
 </head>
 <body>
 
 <a href="#dashboard" class="logo">Work With Me</a>
 
-<!-- Menu -->
-<aside>
-  <ul>
-    <li><a href="#orders">Orders</a></li>
-    <li><a href="#storage">Storage</a></li>
-    <li><a href="#blueprints">Blueprints</a></li>
-    <li><a href="#chat">Chat</a></li>
-  </ul>
-</aside>
+<main>
+    <!-- Menu -->
+    <aside>
+        <ul>
+            <li><a href="#orders">Orders</a></li>
+            <li><a href="#storage">Storage</a></li>
+            <li><a href="#blueprints">Blueprints</a></li>
+            <li><a href="#chat">Chat</a></li>
+        </ul>
+    </aside>
 
-<!-- Login -->
-<main id="login" class="login">
-  <form>
-    <h1>Log In</h1>
-    <label>
-      username
-      <input type="text">
-    </label>
-    <label>
-      password
-      <input type="password">
-    </label>
-    <button type="submit">login</button>
-  </form>
-</main>
+    <section class="content">
+        <!-- Login -->
+        <section id="login" class="login">
+            <form>
+                <h1>Log In</h1>
+                <label>
+                    username
+                    <input type="text">
+                </label>
+                <label>
+                    password
+                    <input type="password">
+                </label>
+                <button type="submit">login</button>
+            </form>
+        </section>
 
-<!-- Dashboard -->
-<main id="dashboard">
-  Dashboard
-</main>
+        <!-- Dashboard -->
+        <section id="dashboard">
+            Dashboard
+        </section>
 
-<!-- Orders -->
-<main id="orders">
-  Orders
-</main>
+        <!-- Orders -->
+        <section id="orders" class="orders">
+            Orders
+            <ul id="orders-list"></ul>
+        </section>
 
-<!-- Storage -->
-<main id="storage">
-  Storage
-</main>
+        <!-- Storage -->
+        <section id="storage">
+            Storage
+        </section>
 
-<!-- Blueprints -->
-<main id="blueprints">
-  Blueprints
-</main>
+        <!-- Blueprints -->
+        <section id="blueprints">
+            Blueprints
+        </section>
 
-<!-- Chat -->
-<main id="chat">
-  Chat
+        <!-- Chat -->
+        <section id="chat">
+            Chat
+        </section>
+    </section>
 </main>
 
 </body>

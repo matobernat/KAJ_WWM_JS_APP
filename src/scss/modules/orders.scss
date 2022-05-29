@@ -1,0 +1,44 @@
+.orders {
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+
+    li {
+      display: flex;
+      align-items: center;
+      height: 40px;
+      border-radius: 20px;
+      border: 1px solid black;
+      width: 100%;
+
+      &:nth-child(odd) {
+        background: $greyLightColor;
+      }
+
+      &:nth-child(even) {
+        background: rgba($themeColor, 0.5);
+      }
+
+      .icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        svg {
+          color: black;
+        }
+      }
+
+      .name {
+        flex: 1;
+        padding-left: 5px;
+      }
+
+      > * {
+        padding: 0 15px;
+      }
+    }
+  }
+}

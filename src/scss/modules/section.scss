@@ -1,0 +1,14 @@
+section {
+  &:not(.content) {
+    display: none;
+
+    &:target {
+      display: block;
+    }
+  }
+
+  &.content {
+    padding: 0 30px;
+    flex: 1;
+  }
+}
