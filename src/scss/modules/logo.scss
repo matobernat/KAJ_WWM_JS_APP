@@ -1,4 +1,5 @@
 .logo {
+  @extend .main-text;
   text-align: center;
   width: 100%;
   display: block;
@@ -6,6 +7,4 @@
   font-weight: 700;
   font-size: 144px;
   margin-bottom: 32px;
-  color: $themeColor;
-  text-shadow: 0 0 3px black;
 }

@@ -2,11 +2,12 @@ export class Login {
 
   handleMenu() {
     const menu = document.querySelector('aside');
-    const loginButton = document.querySelector('#login-button');
+    const loginForm = document.querySelector('#login form');
 
     menu.classList.add('hide');
 
-    loginButton.addEventListener('click', () => {
+    loginForm.addEventListener('submit', (e) => {
+      window.location.hash = '#dashboard';
       menu.classList.remove('hide');
     });
   }

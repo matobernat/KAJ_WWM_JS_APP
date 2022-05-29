@@ -1,6 +1,37 @@
 .login {
-  &-form {
+  form {
     background: red;
-    padding: 30px;
+    padding: 10px 16px;
+    border-radius: 30px;
+    border: 5px solid $themeColor;
+    background: $greyColor;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    h1 {
+      @extend .main-text;
+      font-size: 96px;
+      margin: 0 0 30px;
+    }
+
+    label {
+      @extend .main-text;
+      font-size: 40px;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      margin-bottom: 30px;
+
+      input {
+        height: 40px;
+        border-radius: 25px;
+        border: 1px solid $themeColor;
+        padding: 0 30px;
+        min-width: 465px;
+      }
+    }
+
   }
 }
