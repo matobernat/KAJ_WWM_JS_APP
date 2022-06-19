@@ -5,6 +5,9 @@
     border-radius: 30px;
     border: 5px solid $themeColor;
     background: $greyColor;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
 
     display: flex;
     flex-direction: column;
