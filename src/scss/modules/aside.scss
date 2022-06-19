@@ -1,6 +1,40 @@
 aside {
 
+  background: $greyDarkerColor;
+  border: 2px solid $themeColor;
+  border-radius: 30px;
+  padding: 0 5px 40px;
+
   &.hide {
     display: none;
+  }
+
+  h2 {
+    @extend .main-text;
+    font-size: 96px;
+    margin: 0 30px 30px;
+    text-align: center;
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    a {
+      padding: 5px 30px 5px 20px;
+      width: 100%;
+      display: block;
+      background: white;
+      border: 1px solid $themeColor;
+      border-radius: 30px;
+      text-decoration: none;
+      @extend .main-text;
+      text-shadow: 0 0 2px black;
+    }
   }
 }
