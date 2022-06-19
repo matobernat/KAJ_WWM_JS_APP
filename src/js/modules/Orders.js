@@ -64,6 +64,42 @@ export class Orders {
         this.createList(ordersToRender)
     }
 
+    getOrdersData() {
+        if (!localStorage.getItem(ordersKey)) {
+            console.log("DATABASE ERROR key: ", ordersKey)
+            return "404 ERROR " + ordersKey;
+        } else {
+            return JSON.parse(localStorage.getItem(ordersKey))
+        }
+    }
+
+    putOrdersData() {
+        let mockOrder = {
+            name: ProductName.OversizedBlackShirt,
+            size: Size.XL,
+            daysLeft: 10,
+            checked: true,
+            icon: Icon.TshirtBlack
+        }
+        let data = this.getOrdersData()
+        data.append(mockOrder)
+
+        localStorage.setItem(ordersKey, JSON.stringify(orders))
+        return this.getOrdersData()
+
+    }
+
+    getFinishedOrdersRatio() {
+        let data = this.getOrdersData()
+        let finished = 0
+        let unfinished = 0
+        data.forEach((item) => {
+            item.checked ? finished += 1 : unfinished += 1
+        })
+        return finished / (finished + unfinished) * 100
+    }
+
+    // rendering function
     createList(ordersToRender) {
         const ordersList = document.querySelector("#orders-list")
         ordersList.innerHTML = '';
