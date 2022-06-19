@@ -504,28 +504,56 @@ function hmrAcceptRun(bundle, id) {
 
 },{}],"8lRBv":[function(require,module,exports) {
 var _login = require("./modules/Login");
+var _orders = require("./modules/Orders");
+var _users = require("./modules/Users");
+var _navigation = require("./modules/Navigation");
+var _dashboard = require("./modules/Dashboard");
 const loginFunctions = new (0, _login.Login)();
+const ordersFunctions = new (0, _orders.Orders)();
+const usersFunctions = new (0, _users.Users)();
+const navigationFunctions = new (0, _navigation.Navigation)();
+const DashboardFunctions = new (0, _dashboard.Dashboard)();
 window.onload = ()=>{
     window.location.hash = "login";
+    navigationFunctions.handleChanges();
+    usersFunctions.init();
     loginFunctions.handleMenu();
+    ordersFunctions.init();
 };
 
-},{"./modules/Login":"eZHT5"}],"eZHT5":[function(require,module,exports) {
+},{"./modules/Login":"eZHT5","./modules/Orders":"hakeO","./modules/Users":"2F8EQ","./modules/Navigation":"chRXV","./modules/Dashboard":"jPhRr"}],"eZHT5":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Login", ()=>Login);
+var _users = require("./Users");
 class Login {
+    users = new (0, _users.Users)();
     handleMenu() {
-        const menu = document.querySelector("aside");
-        const loginButton = document.querySelector("#login-button");
-        menu.classList.add("hide");
-        loginButton.addEventListener("click", ()=>{
-            menu.classList.remove("hide");
+        const loginForm = document.querySelector("#login form");
+        this.hideMenu();
+        loginForm.addEventListener("submit", (e)=>{
+            let login = e.target[0].value;
+            let password = e.target[1].value;
+            let permissions = this.users.authenticate(login, password);
+            if (permissions == this.users.permissions.none) window.alert("wrong password or login");
+            else {
+                console.log("LOGIN permissions: ", permissions);
+                window.location.hash = "#dashboard";
+                this.showMenu();
+            }
         });
+    }
+    hideMenu() {
+        const menu = document.querySelector("aside");
+        menu.classList.add("hide");
+    }
+    showMenu() {
+        const menu = document.querySelector("aside");
+        menu.classList.remove("hide");
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./Users":"2F8EQ"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -555,6 +583,284 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}]},["5uAhr","8lRBv"], "8lRBv", "parcelRequiree6ef")
+},{}],"2F8EQ":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Users", ()=>Users);
+const Permissions = {
+    admin: "admin",
+    user: "user",
+    none: "none"
+};
+const errorUser = [
+    {
+        login: "error",
+        password: "error",
+        permissions: Permissions.none,
+        logged: false
+    }
+];
+const users = [
+    {
+        login: "manager",
+        password: "haha",
+        permissions: Permissions.admin,
+        logged: false
+    },
+    {
+        login: "worker",
+        password: "haha",
+        permissions: Permissions.user,
+        logged: false
+    }
+];
+const usersKey = "Users";
+class Users {
+    permissions = Permissions;
+    init() {
+        if (!localStorage.getItem(usersKey)) localStorage.setItem(usersKey, JSON.stringify(users));
+    }
+    getUsers() {
+        if (!localStorage.getItem(usersKey)) {
+            console.log("login ERROR");
+            return errorUser;
+        } else return JSON.parse(localStorage.getItem(usersKey));
+    }
+    putUsers(users1) {
+        localStorage.setItem(ordersKey, JSON.stringify(orders));
+        if (users1 == this.getUsers()) return true;
+        return false;
+    }
+    authenticate(login, password) {
+        if (!localStorage.getItem(usersKey)) {
+            console.log("login ERROR");
+            return Permissions.none;
+        }
+        let storedUsers = JSON.parse(localStorage.getItem(usersKey));
+        let logged = storedUsers.filter((user)=>{
+            if (user.login == login && user.password == password) {
+                user.logged = true;
+                return true;
+            }
+            return false;
+        });
+        if (logged.length > 0) return logged[0].permissions;
+        return Permissions.none;
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hakeO":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Orders", ()=>Orders);
+const ProductName = {
+    OversizedBlackShirt: "Oversized Black Shirt",
+    OversizedWhiteShirt: "Oversized White Shirt",
+    BlackPants: "Black Pants",
+    WhitePants: "White Pants"
+};
+const Size = {
+    XL: "XL",
+    L: "L",
+    M: "M",
+    S: "S"
+};
+const Icon = {
+    TshirtBlack: "t-shirt",
+    PantsWhite: "clothes-pants-sweat"
+};
+const orders = [
+    {
+        name: ProductName.OversizedBlackShirt,
+        size: Size.XL,
+        daysLeft: 10,
+        checked: true,
+        icon: Icon.TshirtBlack
+    },
+    {
+        name: ProductName.OversizedBlackShirt,
+        size: Size.XL,
+        daysLeft: 10,
+        checked: false,
+        icon: Icon.TshirtBlack
+    },
+    {
+        name: ProductName.OversizedWhiteShirt,
+        size: Size.XL,
+        daysLeft: 15,
+        checked: false,
+        icon: Icon.PantsWhite
+    },
+    {
+        name: ProductName.OversizedWhiteShirt,
+        size: Size.L,
+        daysLeft: 15,
+        checked: false,
+        icon: Icon.TshirtBlack
+    },
+    {
+        name: ProductName.WhitePants,
+        size: Size.L,
+        daysLeft: 20,
+        checked: false,
+        icon: Icon.PantsWhite
+    }
+];
+const ordersKey = "Orders";
+class Orders {
+    init() {
+        let ordersToRender = orders;
+        if (!localStorage.getItem(ordersKey)) localStorage.setItem(ordersKey, JSON.stringify(orders));
+        else ordersToRender = JSON.parse(localStorage.getItem(ordersKey));
+        this.createList(ordersToRender);
+    }
+    getOrdersData() {
+        if (!localStorage.getItem(ordersKey)) {
+            console.log("DATABASE ERROR key: ", ordersKey);
+            return "404 ERROR " + ordersKey;
+        } else return JSON.parse(localStorage.getItem(ordersKey));
+    }
+    putOrdersData() {
+        let mockOrder = {
+            name: ProductName.OversizedBlackShirt,
+            size: Size.XL,
+            daysLeft: 10,
+            checked: true,
+            icon: Icon.TshirtBlack
+        };
+        let data = this.getOrdersData();
+        data.append(mockOrder);
+        localStorage.setItem(ordersKey, JSON.stringify(orders));
+        return this.getOrdersData();
+    }
+    getFinishedOrdersRatio() {
+        let data = this.getOrdersData();
+        let finished = 0;
+        let unfinished = 0;
+        data.forEach((item)=>{
+            item.checked ? finished += 1 : unfinished += 1;
+        });
+        return finished / (finished + unfinished) * 100;
+    }
+    // rendering function
+    createList(ordersToRender) {
+        const ordersList = document.querySelector("#orders-list");
+        ordersList.innerHTML = "";
+        ordersToRender.map((order, key)=>{
+            const checkbox = document.createElement("div");
+            checkbox.classList.add("checkbox");
+            checkbox.classList.toggle("checked", order.checked);
+            checkbox.innerHTML = "checkbox";
+            checkbox.addEventListener("click", ()=>{
+                console.log("checkbox clicked", order);
+            });
+            const orderTemplate = `
+                    <div class="icon">
+                        <span class="iconify" 
+                        data-icon="icon-park-solid:${order.icon}"></span>
+                    </div>
+                    <div class="name">${order.name}</div>
+                    <div class="size">${order.size}</div>
+                    <div class="daysLeft">${order.daysLeft} days left</div>
+                `;
+            const orderElement = document.createElement("li");
+            orderElement.insertAdjacentHTML("beforeend", orderTemplate);
+            orderElement.append(checkbox);
+            ordersList.append(orderElement);
+        });
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"chRXV":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Navigation", ()=>Navigation);
+var _users = require("./Users");
+var _login = require("./Login");
+var _dashboard = require("./Dashboard");
+class Navigation {
+    // users = new Users();
+    login = new (0, _login.Login)();
+    dashboard = new (0, _dashboard.Dashboard)();
+    handleChanges() {
+        // whole link changes
+        // window.addEventListener('locationchange', function () {
+        //     console.log('location changed!');
+        // });
+        // hash changes
+        window.addEventListener("hashchange", (e)=>{
+            console.log("hash changed!", e.oldURL, e.newURL, typeof e.newURL);
+            this.handleMenu(e.newURL);
+            this.handleDashboard(e.newURL);
+        });
+    }
+    handleMenu(url) {
+        if (url.includes("login")) this.login.hideMenu();
+        if (!url.includes("login")) this.login.showMenu();
+    }
+    handleDashboard(url) {
+        if (url.includes("dashboard")) {
+            console.log("entered DASHBOARD!");
+            this.dashboard.setProgressBars();
+        // this.dashboard.renderCharts();
+        } else this.dashboard.resetProgressBars();
+    }
+}
+
+},{"./Users":"2F8EQ","./Login":"eZHT5","./Dashboard":"jPhRr","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jPhRr":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Dashboard", ()=>Dashboard);
+var _orders = require("./Orders");
+class Dashboard {
+    ordersFunctions = new (0, _orders.Orders)();
+    renderCharts() {
+        console.log("rendering charts");
+        const container = document.querySelector("#svg-container-div");
+        var svg = this.getNode("svg");
+        container.appendChild(svg);
+        // var r = this.getNode('rect', {x: 10, y: 10, width: 100, height: 20, fill: '#ff00ff'});
+        // svg.appendChild(r);
+        var r = this.getNode("rect", {
+            x: 20,
+            y: 40,
+            width: 100,
+            height: 40,
+            rx: 8,
+            ry: 8,
+            fill: "pink",
+            stroke: "purple",
+            strokeWidth: 7
+        });
+        svg.appendChild(r);
+    }
+    getNode(n, v) {
+        n = document.createElementNS("http://www.w3.org/2000/svg", n);
+        for(var p in v)n.setAttributeNS(null, p.replace(/[A-Z]/g, function(m, p, o, s) {
+            return "-" + m.toLowerCase();
+        }), v[p]);
+        return n;
+    }
+    resetProgressBars() {
+        let progressBars = document.querySelectorAll('[id*="progress-bar"]');
+        progressBars.forEach((item)=>{
+            console.log(item);
+            item.style.backgroundColor = "red";
+        });
+    // progressBars.style.backgroundColor = "red"
+    }
+    setProgressBars() {
+        let progressBars = document.querySelectorAll('[id*="progress-bar"]');
+        let ratio = this.ordersFunctions.getFinishedOrdersRatio();
+        progressBars.forEach((item)=>{
+            console.log(item);
+            item.style.width = `${ratio}%`;
+            item.style.backgroundColor = ratio < 30 ? "red" : "green";
+        });
+    // progressBars.style.backgroundColor = "red"
+    }
+}
+
+},{"./Orders":"hakeO","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["5uAhr","8lRBv"], "8lRBv", "parcelRequiree6ef")
 
 //# sourceMappingURL=index.59a40e7a.js.map
