@@ -1,1 +1,98 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>KAJ</title><link rel="stylesheet" href="index.8d166bf4.css"><script type="module" src="index.9da12ad3.js"></script><script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script></head><body> <a href="#dashboard" class="logo">Work With Me</a> <main>  <aside> <ul> <li><a href="#orders">Orders</a></li> <li><a href="#storage">Storage</a></li> <li><a href="#blueprints">Blueprints</a></li> <li><a href="#chat">Chat</a></li> </ul> </aside> <section class="content">  <section id="login" class="login"> <form> <h1>Log In</h1> <label> username <input type="text"> </label> <label> password <input type="password"> </label> <button type="submit">login</button> </form> </section>  <section id="dashboard"> <h2>Dashboard</h2>  <div class="progress-bar-outline"> <div id="orders-progress-bar"></div> </div> <div class="progress-bar-outline"> <div id="deadlines-progress-bar"></div> </div> <div class="progress-bar-outline"> <div id="resources-progress-bar"></div> </div>             </section>  <section id="orders" class="orders"> <h2>Orders</h2> <ul id="orders-list"></ul> </section>  <section id="storage"> <h2>Storage</h2> </section>  <section id="blueprints"> <h2>Blueprints</h2> </section>  <section id="chat"> <h2>Chat</h2> </section> </section> </main> </body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>KAJ</title>
+    <link rel="stylesheet" href="/index.fcb3f8e3.css">
+    <script src="/index.59a40e7a.js" defer=""></script>
+
+    <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
+</head>
+<body>
+
+<a href="#dashboard" class="logo">Work With Me</a>
+
+<main>
+    <!-- Menu -->
+    <aside>
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="#orders">Orders</a></li>
+            <li><a href="#storage">Storage</a></li>
+            <li><a href="#blueprints">Blueprints</a></li>
+            <li><a href="#chat">Chat</a></li>
+        </ul>
+    </aside>
+
+    <div class="content">
+        <!-- Login -->
+        <section id="login" class="login">
+            <form>
+                <h2>Log In</h2>
+                <label>
+                    username
+                    <input type="text">
+                </label>
+                <label>
+                    password
+                    <input type="password">
+                </label>
+                <button type="submit">login</button>
+            </form>
+        </section>
+
+        <!-- Dashboard -->
+        <section id="dashboard">
+            <h2>Dashboard</h2>
+            <!--            <div id="svg-container-div"></div>-->
+            <h3>Finished orders</h3>
+            <div class="progress-bar-outline">
+                <div id="orders-progress-bar"></div>
+            </div>
+            <h3>Deadlines</h3>
+            <div class="progress-bar-outline">
+                <div id="deadlines-progress-bar"></div>
+            </div>
+            <h3>Resources</h3>
+            <div class="progress-bar-outline">
+                <div id="resources-progress-bar"></div>
+            </div>
+            <!--            Dashboard-->
+            <!--            <svg width="1000" height="300" viewBox="0 0 1000 300">-->
+            <!--                &lt;!&ndash;                <circle cx="20" cy="50" r="20"/>&ndash;&gt;-->
+            <!--                <rect x="20" y="10" width="800" height="30" rx="15"-->
+            <!--                      style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>-->
+            <!--                <rect x="20" y="10" width="800" height="30" rx="15"-->
+            <!--                      style="fill:rgb(255,255,255);stroke-width:1;stroke:rgb(0,0,0)"/>-->
+            <!--                &lt;!&ndash;                <g transform="rotate(45) translate(30, -30)">&ndash;&gt;-->
+            <!--                &lt;!&ndash;                    <rect x="0" y="-10" width="30" height="30"/>&ndash;&gt;-->
+            <!--                &lt;!&ndash;                    <text x="30" y="10">SVG</text>&ndash;&gt;-->
+            <!--                &lt;!&ndash;                </g>&ndash;&gt;-->
+            <!--            </svg>-->
+        </section>
+
+        <!-- Orders -->
+        <section id="orders" class="orders">
+            <h2>Orders</h2>
+            <ul id="orders-list"></ul>
+        </section>
+
+        <!-- Storage -->
+        <section id="storage">
+            <h2>Storage</h2>
+        </section>
+
+        <!-- Blueprints -->
+        <section id="blueprints">
+            <h2>Blueprints</h2>
+        </section>
+
+        <!-- Chat -->
+        <section id="chat">
+            <h2>Chat</h2>
+        </section>
+    </div>
+</main>
+
+</body>
+</html>

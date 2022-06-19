@@ -742,6 +742,9 @@ class Orders {
         });
         return finished / (finished + unfinished) * 100;
     }
+    handleCheckBoxClick(checkbox, order) {
+        checkbox.classList.toggle("checked");
+    }
     // rendering function
     createList(ordersToRender) {
         const ordersList = document.querySelector("#orders-list");
@@ -750,9 +753,10 @@ class Orders {
             const checkbox = document.createElement("div");
             checkbox.classList.add("checkbox");
             checkbox.classList.toggle("checked", order.checked);
-            checkbox.innerHTML = "checkbox";
+            checkbox.innerHTML = `<span class="iconify" data-icon="ant-design:check-circle-twotone"></span>`;
             checkbox.addEventListener("click", ()=>{
                 console.log("checkbox clicked", order);
+                this.handleCheckBoxClick(checkbox, order);
             });
             const orderTemplate = `
                     <div class="icon">
