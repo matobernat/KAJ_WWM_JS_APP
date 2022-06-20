@@ -175,6 +175,11 @@ aside ul a {
   color: #0fa958;
 }
 
+.orders ul li .delete svg {
+  color: gray;
+  font-size: 20px;
+}
+
 .progress-bar-outline {
   width: 100%;
   height: 40px;

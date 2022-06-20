@@ -509,16 +509,13 @@ var _users = require("./modules/Users");
 var _navigation = require("./modules/Navigation");
 var _dashboard = require("./modules/Dashboard");
 const loginFunctions = new (0, _login.Login)();
-const ordersFunctions = new (0, _orders.Orders)();
 const usersFunctions = new (0, _users.Users)();
 const navigationFunctions = new (0, _navigation.Navigation)();
-const DashboardFunctions = new (0, _dashboard.Dashboard)();
 window.onload = ()=>{
     window.location.hash = "login";
     navigationFunctions.handleChanges();
     usersFunctions.init();
     loginFunctions.handleMenu();
-    ordersFunctions.init();
 };
 
 },{"./modules/Login":"eZHT5","./modules/Orders":"hakeO","./modules/Users":"2F8EQ","./modules/Navigation":"chRXV","./modules/Dashboard":"jPhRr"}],"eZHT5":[function(require,module,exports) {
@@ -535,7 +532,7 @@ class Login {
             let login = e.target[0].value;
             let password = e.target[1].value;
             let permissions = this.users.authenticate(login, password);
-            if (permissions == this.users.permissions.none) window.alert("wrong password or login");
+            if (permissions === this.users.permissions.none) window.alert("wrong password or login");
             else {
                 console.log("LOGIN permissions: ", permissions);
                 window.location.hash = "#dashboard";
@@ -620,15 +617,19 @@ class Users {
     init() {
         if (!localStorage.getItem(usersKey)) localStorage.setItem(usersKey, JSON.stringify(users));
     }
+    getCurrentUser() {
+        const users1 = this.getUsers();
+        return users1.find((user)=>user.logged);
+    }
     getUsers() {
         if (!localStorage.getItem(usersKey)) {
             console.log("login ERROR");
             return errorUser;
         } else return JSON.parse(localStorage.getItem(usersKey));
     }
-    putUsers(users1) {
-        localStorage.setItem(ordersKey, JSON.stringify(orders));
-        if (users1 == this.getUsers()) return true;
+    putUsers(users2) {
+        localStorage.setItem(usersKey, JSON.stringify(users2));
+        if (users2 === this.getUsers()) return true;
         return false;
     }
     authenticate(login, password) {
@@ -640,6 +641,7 @@ class Users {
         let logged = storedUsers.filter((user)=>{
             if (user.login == login && user.password == password) {
                 user.logged = true;
+                this.putUsers(storedUsers);
                 return true;
             }
             return false;
@@ -653,6 +655,7 @@ class Users {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Orders", ()=>Orders);
+var _users = require("./Users");
 const ProductName = {
     OversizedBlackShirt: "Oversized Black Shirt",
     OversizedWhiteShirt: "Oversized White Shirt",
@@ -671,6 +674,7 @@ const Icon = {
 };
 const orders = [
     {
+        id: "1",
         name: ProductName.OversizedBlackShirt,
         size: Size.XL,
         daysLeft: 10,
@@ -678,6 +682,7 @@ const orders = [
         icon: Icon.TshirtBlack
     },
     {
+        id: "2",
         name: ProductName.OversizedBlackShirt,
         size: Size.XL,
         daysLeft: 10,
@@ -685,6 +690,7 @@ const orders = [
         icon: Icon.TshirtBlack
     },
     {
+        id: "3",
         name: ProductName.OversizedWhiteShirt,
         size: Size.XL,
         daysLeft: 15,
@@ -692,6 +698,7 @@ const orders = [
         icon: Icon.PantsWhite
     },
     {
+        id: "4",
         name: ProductName.OversizedWhiteShirt,
         size: Size.L,
         daysLeft: 15,
@@ -699,6 +706,7 @@ const orders = [
         icon: Icon.TshirtBlack
     },
     {
+        id: "5",
         name: ProductName.WhitePants,
         size: Size.L,
         daysLeft: 20,
@@ -708,9 +716,11 @@ const orders = [
 ];
 const ordersKey = "Orders";
 class Orders {
+    users = new (0, _users.Users)();
     init() {
         let ordersToRender = orders;
-        if (!localStorage.getItem(ordersKey)) localStorage.setItem(ordersKey, JSON.stringify(orders));
+        const savedOrders = JSON.parse(localStorage.getItem(ordersKey));
+        if (!savedOrders || !savedOrders.length) localStorage.setItem(ordersKey, JSON.stringify(orders));
         else ordersToRender = JSON.parse(localStorage.getItem(ordersKey));
         this.createList(ordersToRender);
     }
@@ -733,6 +743,11 @@ class Orders {
         localStorage.setItem(ordersKey, JSON.stringify(orders));
         return this.getOrdersData();
     }
+    putOrders(orders1) {
+        localStorage.setItem(ordersKey, JSON.stringify(orders1));
+        if (orders1 === this.getOrdersData()) return true;
+        return false;
+    }
     getFinishedOrdersRatio() {
         let data = this.getOrdersData();
         let finished = 0;
@@ -749,6 +764,8 @@ class Orders {
     createList(ordersToRender) {
         const ordersList = document.querySelector("#orders-list");
         ordersList.innerHTML = "";
+        const currentUser = this.users.getCurrentUser();
+        console.log("user", currentUser);
         ordersToRender.map((order, key)=>{
             const checkbox = document.createElement("div");
             checkbox.classList.add("checkbox");
@@ -770,22 +787,35 @@ class Orders {
             const orderElement = document.createElement("li");
             orderElement.insertAdjacentHTML("beforeend", orderTemplate);
             orderElement.append(checkbox);
+            if (currentUser.permissions === this.users.permissions.admin) {
+                const deleteButton = document.createElement("div");
+                deleteButton.classList.add("delete");
+                deleteButton.innerHTML = `<span class="iconify" data-icon="akar-icons:cross"></span>`;
+                deleteButton.addEventListener("click", ()=>{
+                    const validOrders = ordersToRender.filter((o)=>o.id !== order.id);
+                    this.putOrders(validOrders);
+                    this.createList(validOrders);
+                });
+                orderElement.append(deleteButton);
+            }
             ordersList.append(orderElement);
         });
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"chRXV":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./Users":"2F8EQ"}],"chRXV":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Navigation", ()=>Navigation);
 var _users = require("./Users");
 var _login = require("./Login");
 var _dashboard = require("./Dashboard");
+var _orders = require("./Orders");
 class Navigation {
     // users = new Users();
     login = new (0, _login.Login)();
     dashboard = new (0, _dashboard.Dashboard)();
+    orders = new (0, _orders.Orders)();
     handleChanges() {
         // whole link changes
         // window.addEventListener('locationchange', function () {
@@ -796,6 +826,7 @@ class Navigation {
             console.log("hash changed!", e.oldURL, e.newURL, typeof e.newURL);
             this.handleMenu(e.newURL);
             this.handleDashboard(e.newURL);
+            if (e.newURL.includes("orders")) this.orders.init();
         });
     }
     handleMenu(url) {
@@ -811,7 +842,7 @@ class Navigation {
     }
 }
 
-},{"./Users":"2F8EQ","./Login":"eZHT5","./Dashboard":"jPhRr","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jPhRr":[function(require,module,exports) {
+},{"./Users":"2F8EQ","./Login":"eZHT5","./Dashboard":"jPhRr","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./Orders":"hakeO"}],"jPhRr":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Dashboard", ()=>Dashboard);
