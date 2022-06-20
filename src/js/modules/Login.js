@@ -13,7 +13,7 @@ export class Login {
             let login = e.target[0].value
             let password = e.target[1].value
             let permissions = this.users.authenticate(login, password)
-            if (permissions == this.users.permissions.none) {
+            if (permissions === this.users.permissions.none) {
                 window.alert("wrong password or login")
             } else {
                 console.log("LOGIN permissions: ", permissions)
