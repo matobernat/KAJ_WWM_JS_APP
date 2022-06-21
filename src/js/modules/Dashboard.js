@@ -14,7 +14,8 @@ export class Dashboard {
 
 
     resetProgressBars() {
-        let progressBars = document.querySelectorAll('[class*="-progress-bar"]');
+        console.log("RESETING ANIMATION")
+        let progressBars = document.querySelectorAll('[class*="-dashboard-progress-bar"]');
         progressBars.forEach((item) => {
             item.style.transition = "none"
             item.style.backgroundColor = "red";
@@ -23,13 +24,14 @@ export class Dashboard {
     }
 
     setProgressBars() {
-        let progressBars = document.querySelectorAll('[class*="-progress-bar"]');
+        console.log("STARTING ANIMATION")
+        let progressBars = document.querySelectorAll('[class*="-dashboard-progress-bar"]');
         let ratio = 0
 
         progressBars.forEach((item) => {
-            if (item.className === "deadlines-progress-bar") ratio = 20;
-            if (item.className === "resources-progress-bar") ratio = 85;
-            if (item.className === "orders-progress-bar") ratio = this.ordersFunctions.getFinishedOrdersRatio();
+            if (item.className === "deadlines-dashboard-progress-bar") ratio = 20;
+            if (item.className === "resources-dashboard-progress-bar") ratio = 85;
+            if (item.className === "orders-dashboard-progress-bar") ratio = this.ordersFunctions.getFinishedOrdersRatio();
             item.style.transition = "width 0.5s ease-in-out"
             item.style.width = `${ratio == 0 ? 2 : ratio}%`;
             item.style.backgroundColor = ratio < 30 ? 'red' : "green";

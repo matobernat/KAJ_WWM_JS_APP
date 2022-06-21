@@ -21,7 +21,6 @@ export class Navigation {
 
             console.log('hash changed!', e.oldURL, e.newURL, typeof (e.newURL));
 
-            this.handleProgessBars(e.newURL)
 
             this.handleMenu(e.newURL);
             this.handleDashboard(e.newURL);
@@ -39,8 +38,10 @@ export class Navigation {
 
     handleDashboard(url) {
         if (url.includes('dashboard')) {
+            console.log("entering dashboard")
             this.dashboard.setProgressBars();
-        } else if (url.includes('storage')) {
+        } else {
+            console.log("exiting dashboard")
             this.dashboard.resetProgressBars();
         }
     }
@@ -48,12 +49,10 @@ export class Navigation {
     handleOrders(url) {
         if (url.includes('orders')) {
             this.orders.init();
+            this.orders.setProgressBars();
+        } else {
+            this.orders.resetProgressBars();
         }
-    }
-
-    handleProgessBars(url) {
-        this.dashboard.resetProgressBars();
-        this.dashboard.setProgressBars();
     }
 
 
