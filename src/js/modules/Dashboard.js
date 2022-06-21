@@ -3,30 +3,6 @@ import {Orders} from "./Orders";
 export class Dashboard {
     ordersFunctions = new Orders();
 
-    renderCharts() {
-        console.log("rendering charts")
-        const container = document.querySelector("#svg-container-div")
-        var svg = this.getNode("svg");
-        container.appendChild(svg);
-
-        // var r = this.getNode('rect', {x: 10, y: 10, width: 100, height: 20, fill: '#ff00ff'});
-        // svg.appendChild(r);
-
-        var r = this.getNode('rect', {
-            x: 20,
-            y: 40,
-            width: 100,
-            height: 40,
-            rx: 8,
-            ry: 8,
-            fill: 'pink',
-            stroke: 'purple',
-            strokeWidth: 7
-        });
-        svg.appendChild(r);
-
-    }
-
     getNode(n, v) {
         n = document.createElementNS("http://www.w3.org/2000/svg", n);
         for (var p in v)
@@ -38,26 +14,26 @@ export class Dashboard {
 
 
     resetProgressBars() {
-        let progressBars = document.querySelectorAll('[id*="progress-bar"]');
-
-
+        let progressBars = document.querySelectorAll('[class*="-progress-bar"]');
         progressBars.forEach((item) => {
-            console.log(item)
+            item.style.transition = "none"
             item.style.backgroundColor = "red";
+            item.style.width = `${0}%`;
         })
-        // progressBars.style.backgroundColor = "red"
     }
 
     setProgressBars() {
-        let progressBars = document.querySelectorAll('[id*="progress-bar"]');
-        let ratio = this.ordersFunctions.getFinishedOrdersRatio()
+        let progressBars = document.querySelectorAll('[class*="-progress-bar"]');
+        let ratio = 0
 
         progressBars.forEach((item) => {
-            console.log(item)
-            item.style.width = `${ratio}%`;
+            if (item.className === "deadlines-progress-bar") ratio = 20;
+            if (item.className === "resources-progress-bar") ratio = 85;
+            if (item.className === "orders-progress-bar") ratio = this.ordersFunctions.getFinishedOrdersRatio();
+            item.style.transition = "width 0.5s ease-in-out"
+            item.style.width = `${ratio == 0 ? 2 : ratio}%`;
             item.style.backgroundColor = ratio < 30 ? 'red' : "green";
         })
-        // progressBars.style.backgroundColor = "red"
     }
 
 

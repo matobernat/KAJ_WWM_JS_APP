@@ -49,7 +49,7 @@
         }
 
         &.checked svg {
-          color: #0fa958;
+          color: $themeColor;
         }
       }
 
@@ -59,6 +59,11 @@
           font-size: 20px;
         }
       }
+    }
+
+    .add {
+      color: $themeColor;
+      font-size: 45px;
     }
   }
 }

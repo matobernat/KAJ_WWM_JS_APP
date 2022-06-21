@@ -1,145 +1,160 @@
-import { Users } from './Users';
+import {Users} from './Users';
+import {Dashboard} from "./Dashboard";
 
 const ProductName = {
-  OversizedBlackShirt: 'Oversized Black Shirt',
-  OversizedWhiteShirt: 'Oversized White Shirt',
-  BlackPants: 'Black Pants',
-  WhitePants: 'White Pants'
+    OversizedBlackShirt: 'Oversized Black Shirt',
+    OversizedWhiteShirt: 'Oversized White Shirt',
+    BlackPants: 'Black Pants',
+    WhitePants: 'White Pants'
 };
 
 const Size = {
-  XL: 'XL',
-  L: 'L',
-  M: 'M',
-  S: 'S'
+    XL: 'XL',
+    L: 'L',
+    M: 'M',
+    S: 'S'
 };
 
 const Icon = {
-  TshirtBlack: 't-shirt',
-  PantsWhite: 'clothes-pants-sweat'
+    TshirtBlack: 't-shirt',
+    PantsWhite: 'clothes-pants-sweat'
+};
+
+const mockOrder = {
+    name: ProductName.OversizedBlackShirt,
+    size: Size.XL,
+    daysLeft: 10,
+    checked: false,
+    icon: Icon.TshirtBlack,
+    deleted: false
 };
 
 const orders = [{
-  id: '1',
-  name: ProductName.OversizedBlackShirt,
-  size: Size.XL,
-  daysLeft: 10,
-  checked: true,
-  icon: Icon.TshirtBlack
+    id: '1',
+    name: ProductName.OversizedBlackShirt,
+    size: Size.XL,
+    daysLeft: 10,
+    checked: true,
+    icon: Icon.TshirtBlack,
+    deleted: false
 }, {
-  id: '2',
-  name: ProductName.OversizedBlackShirt,
-  size: Size.XL,
-  daysLeft: 10,
-  checked: false,
-  icon: Icon.TshirtBlack
+    id: '2',
+    name: ProductName.OversizedBlackShirt,
+    size: Size.XL,
+    daysLeft: 10,
+    checked: false,
+    icon: Icon.TshirtBlack,
+    deleted: false
 }, {
-  id: '3',
-  name: ProductName.OversizedWhiteShirt,
-  size: Size.XL,
-  daysLeft: 15,
-  checked: false,
-  icon: Icon.PantsWhite
+    id: '3',
+    name: ProductName.OversizedWhiteShirt,
+    size: Size.XL,
+    daysLeft: 15,
+    checked: false,
+    icon: Icon.PantsWhite,
+    deleted: false
 }, {
-  id: '4',
-  name: ProductName.OversizedWhiteShirt,
-  size: Size.L,
-  daysLeft: 15,
-  checked: false,
-  icon: Icon.TshirtBlack
+    id: '4',
+    name: ProductName.OversizedWhiteShirt,
+    size: Size.L,
+    daysLeft: 15,
+    checked: false,
+    icon: Icon.TshirtBlack,
+    deleted: false
 }, {
-  id: '5',
-  name: ProductName.WhitePants,
-  size: Size.L,
-  daysLeft: 20,
-  checked: false,
-  icon: Icon.PantsWhite
+    id: '5',
+    name: ProductName.WhitePants,
+    size: Size.L,
+    daysLeft: 20,
+    checked: false,
+    icon: Icon.PantsWhite,
+    deleted: false
 }
 ];
 
 const ordersKey = 'Orders';
 
 export class Orders {
-  users = new Users();
+    users = new Users();
 
-  init() {
-    let ordersToRender = orders;
-    const savedOrders = JSON.parse(localStorage.getItem(ordersKey));
-    if (!savedOrders || !savedOrders.length) {
-      localStorage.setItem(ordersKey, JSON.stringify(orders));
-    } else {
-      ordersToRender = JSON.parse(localStorage.getItem(ordersKey));
+    // dashboard = new Dashboard();
+
+    init() {
+        let ordersToRender = orders;
+        const savedOrders = JSON.parse(localStorage.getItem(ordersKey));
+        if (!savedOrders || !savedOrders.length) {
+            localStorage.setItem(ordersKey, JSON.stringify(orders));
+        } else {
+            ordersToRender = JSON.parse(localStorage.getItem(ordersKey));
+        }
+
+        this.createList(ordersToRender);
     }
 
-    this.createList(ordersToRender);
-  }
-
-  getOrdersData() {
-    if (!localStorage.getItem(ordersKey)) {
-      console.log('DATABASE ERROR key: ', ordersKey);
-      return '404 ERROR ' + ordersKey;
-    } else {
-      return JSON.parse(localStorage.getItem(ordersKey));
+    getOrdersData() {
+        if (!localStorage.getItem(ordersKey)) {
+            console.log('DATABASE ERROR key: ', ordersKey);
+            return '404 ERROR ' + ordersKey;
+        } else {
+            return JSON.parse(localStorage.getItem(ordersKey));
+        }
     }
-  }
 
-  putOrdersData() {
-    let mockOrder = {
-      name: ProductName.OversizedBlackShirt,
-      size: Size.XL,
-      daysLeft: 10,
-      checked: true,
-      icon: Icon.TshirtBlack
-    };
-    let data = this.getOrdersData();
-    data.append(mockOrder);
-
-    localStorage.setItem(ordersKey, JSON.stringify(orders));
-    return this.getOrdersData();
-
-  }
-
-  putOrders(orders) {
-    localStorage.setItem(ordersKey, JSON.stringify(orders));
-    if (orders === this.getOrdersData()) {
-      return true;
+    // add new order in local storage
+    putOrder(order) {
+        let data = this.getOrdersData();
+        data.push(order);
+        localStorage.setItem(ordersKey, JSON.stringify(data));
+        return this.getOrdersData();
     }
-    return false;
-  }
 
-  getFinishedOrdersRatio() {
-    let data = this.getOrdersData();
-    let finished = 0;
-    let unfinished = 0;
-    data.forEach((item) => {
-      item.checked ? finished += 1 : unfinished += 1;
-    });
-    return finished / (finished + unfinished) * 100;
-  }
+    // set new orders list in local storage
+    putOrders(orders) {
+        localStorage.setItem(ordersKey, JSON.stringify(orders));
+        return this.getOrdersData();
+    }
 
-  handleCheckBoxClick(checkbox, order) {
-    checkbox.classList.toggle('checked');
-  }
-
-  // rendering function
-  createList(ordersToRender) {
-    const ordersList = document.querySelector('#orders-list');
-    ordersList.innerHTML = '';
-
-    const currentUser = this.users.getCurrentUser();
-    console.log('user', currentUser);
-
-    ordersToRender.map((order, key) => {
-        const checkbox = document.createElement('div');
-        checkbox.classList.add('checkbox');
-        checkbox.classList.toggle('checked', order.checked);
-        checkbox.innerHTML = `<span class="iconify" data-icon="ant-design:check-circle-twotone"></span>`;
-        checkbox.addEventListener('click', () => {
-          console.log('checkbox clicked', order);
-          this.handleCheckBoxClick(checkbox, order);
+    getFinishedOrdersRatio() {
+        let data = this.getOrdersData();
+        let finished = 0;
+        let unfinished = 0;
+        data.filter(item => !item.deleted).forEach((item) => {
+            item.checked ? finished += 1 : unfinished += 1;
         });
+        return finished / (finished + unfinished) * 100;
+    }
 
-        const orderTemplate = `
+    handleCheckBoxClick(checkbox, order, ordersToRender) {
+
+        checkbox.classList.toggle('checked');
+        order.checked = !order.checked;
+        this.createList(this.putOrders(ordersToRender));
+        // this.dashboard.setProgressBars();
+        this.setProgressBars()
+    }
+
+    // rendering function
+    createList(ordersToRender) {
+        const ordersList = document.querySelector('#orders-list');
+        ordersList.innerHTML = '';
+
+
+        const currentUser = this.users.getCurrentUser();
+
+        // filter out orders with deleted flag
+        ordersToRender.filter(order => !order.deleted).map((order, key) => {
+                const checkbox = document.createElement('div');
+                checkbox.classList.add('checkbox');
+                checkbox.classList.toggle('checked', order.checked);
+                checkbox.innerHTML = `<span class="iconify" data-icon="ant-design:check-circle-twotone"></span>`;
+
+                // set order as finished
+                checkbox.addEventListener('click', () => {
+                    console.log('checkbox clicked', order);
+                    this.handleCheckBoxClick(checkbox, order, ordersToRender);
+                });
+
+                const orderTemplate = `
                     <div class="icon">
                         <span class="iconify" 
                         data-icon="icon-park-solid:${order.icon}"></span>
@@ -148,26 +163,53 @@ export class Orders {
                     <div class="size">${order.size}</div>
                     <div class="daysLeft">${order.daysLeft} days left</div>
                 `;
-        const orderElement = document.createElement('li');
-        orderElement.insertAdjacentHTML('beforeend', orderTemplate);
-        orderElement.append(checkbox);
+                const orderElement = document.createElement('li');
+                orderElement.insertAdjacentHTML('beforeend', orderTemplate);
+                orderElement.append(checkbox);
 
-        if (currentUser.permissions === this.users.permissions.admin) {
-          const deleteButton = document.createElement('div');
-          deleteButton.classList.add('delete');
-          deleteButton.innerHTML = `<span class="iconify" data-icon="akar-icons:cross"></span>`;
-          deleteButton.addEventListener('click', () => {
-            const validOrders = ordersToRender.filter(o => o.id !== order.id);
-            this.putOrders(validOrders);
-            this.createList(validOrders);
-          });
-          orderElement.append(deleteButton);
-        }
+                if (currentUser.permissions === this.users.permissions.admin) {
+                    const deleteButton = document.createElement('div');
+                    deleteButton.classList.add('delete');
+                    deleteButton.innerHTML = `<span class="iconify" data-icon="akar-icons:cross"></span>`;
 
-        ordersList.append(orderElement);
-      }
-    );
-  }
+                    // set order as deleted (only by admin)
+                    deleteButton.addEventListener('click', () => {
+                        // const validOrders = ordersToRender.filter(o => o.id !== order.id);
+                        order.deleted = true
+                        this.createList(this.putOrders(ordersToRender));
+                        this.setProgressBars()
+                    });
+                    orderElement.append(deleteButton);
+                }
+
+                ordersList.append(orderElement);
+            }
+        );
+
+        // render add button
+        const addButton = document.createElement('div');
+        addButton.classList.add('add');
+        // addButton.innerHTML = `<span class="iconify" data-icon="akar-icons:cross"></span>`;
+        addButton.innerHTML = `<span class="iconify" data-icon="carbon:add-filled"></span>`;
+        ordersList.appendChild(addButton)
+        addButton.addEventListener("click", () => {
+            this.createList(this.putOrder(mockOrder))
+            this.setProgressBars()
+
+        })
+    }
+
+    setProgressBars() {
+        let progressBars = document.querySelectorAll('[class*="-progress-bar"]');
+        let ratio = this.getFinishedOrdersRatio()
+
+        progressBars.forEach((item) => {
+            item.style.transition = "width 0.5s ease-in-out"
+            item.style.width = `${ratio == 0 ? 2 : ratio}%`;
+            item.style.backgroundColor = ratio < 30 ? 'red' : "green";
+        })
+    }
+
 }
 
 
