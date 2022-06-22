@@ -14,7 +14,6 @@ export class Dashboard {
 
 
     resetProgressBars() {
-        console.log("RESETING ANIMATION")
         let progressBars = document.querySelectorAll('[class*="-dashboard-progress-bar"]');
         progressBars.forEach((item) => {
             item.style.transition = "none"
@@ -24,7 +23,6 @@ export class Dashboard {
     }
 
     setProgressBars() {
-        console.log("STARTING ANIMATION")
         let progressBars = document.querySelectorAll('[class*="-dashboard-progress-bar"]');
         let ratio = 0
 

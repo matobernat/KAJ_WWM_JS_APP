@@ -10,8 +10,8 @@ const navigationFunctions = new Navigation();
 
 window.onload = () => {
     window.location.hash = 'login';
-    navigationFunctions.handleChanges();
     usersFunctions.init();
     loginFunctions.handleMenu();
+    navigationFunctions.handleChanges();
 
 };

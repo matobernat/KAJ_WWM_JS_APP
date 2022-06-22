@@ -10,6 +10,7 @@ export class Navigation {
     orders = new Orders();
 
     handleChanges() {
+        this.orders.setOrdersData()
 
         // whole link changes
         // window.addEventListener('locationchange', function () {
@@ -19,7 +20,7 @@ export class Navigation {
         // hash changes
         window.addEventListener('hashchange', (e) => {
 
-            console.log('hash changed!', e.oldURL, e.newURL, typeof (e.newURL));
+            // console.log('hash changed!', e.oldURL, e.newURL, typeof (e.newURL));
 
 
             this.handleMenu(e.newURL);

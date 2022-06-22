@@ -80,6 +80,10 @@ export class Orders {
     // dashboard = new Dashboard();
 
     init() {
+        this.createList(this.setOrdersData());
+    }
+
+    setOrdersData() {
         let ordersToRender = orders;
         const savedOrders = JSON.parse(localStorage.getItem(ordersKey));
         if (!savedOrders || !savedOrders.length) {
@@ -88,7 +92,7 @@ export class Orders {
             ordersToRender = JSON.parse(localStorage.getItem(ordersKey));
         }
 
-        this.createList(ordersToRender);
+        return ordersToRender
     }
 
     getOrdersData() {
@@ -150,7 +154,7 @@ export class Orders {
 
                 // set order as finished
                 checkbox.addEventListener('click', () => {
-                    console.log('checkbox clicked', order);
+                    // console.log('checkbox clicked', order);
                     this.handleCheckBoxClick(checkbox, order, ordersToRender);
                 });
 
@@ -187,25 +191,25 @@ export class Orders {
         );
 
         // render add button
-        const addButton = document.createElement('div');
-        addButton.classList.add('add');
-        // addButton.innerHTML = `<span class="iconify" data-icon="akar-icons:cross"></span>`;
-        addButton.innerHTML = `<span class="iconify" data-icon="carbon:add-filled"></span>`;
-        ordersList.appendChild(addButton)
-        addButton.addEventListener("click", () => {
-            this.createList(this.putOrder(mockOrder))
-            this.setProgressBars()
+        if (currentUser.permissions === this.users.permissions.admin) {
+            const addButton = document.createElement('div');
+            addButton.classList.add('add');
+            // addButton.innerHTML = `<span class="iconify" data-icon="akar-icons:cross"></span>`;
+            addButton.innerHTML = `<span class="iconify" data-icon="carbon:add-filled"></span>`;
+            ordersList.appendChild(addButton)
+            addButton.addEventListener("click", () => {
+                this.createList(this.putOrder(mockOrder))
+                this.setProgressBars()
+            })
+        }
 
-        })
     }
 
     setProgressBars() {
-        console.log("ORDERS START")
         let progressBars = document.querySelectorAll('[class*="orders-progress-bar"]');
         let ratio = this.getFinishedOrdersRatio()
 
         progressBars.forEach((item) => {
-            console.log("ITEEEEM", item)
             item.style.transition = "width 0.5s ease-in-out"
             item.style.width = `${ratio == 0 ? 2 : ratio}%`;
             item.style.backgroundColor = ratio < 30 ? 'red' : "green";
@@ -213,7 +217,6 @@ export class Orders {
     }
 
     resetProgressBars() {
-        console.log("ORDERS RESET")
         let progressBars = document.querySelectorAll('[class*="orders-progress-bar"]');
         progressBars.forEach((item) => {
             item.style.transition = "none"
