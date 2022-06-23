@@ -124,7 +124,7 @@ aside ul a {
 
 .orders ul {
   width: 100%;
-  margin: 0;
+  margin: 30px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -172,12 +172,17 @@ aside ul a {
 }
 
 .orders ul li .checkbox.checked svg {
-  color: #0fa958;
+  color: #1ff8aa;
 }
 
 .orders ul li .delete svg {
   color: gray;
   font-size: 20px;
+}
+
+.orders ul .add {
+  color: #1ff8aa;
+  font-size: 45px;
 }
 
 .progress-bar-outline {
@@ -188,16 +193,11 @@ aside ul a {
   overflow: hidden;
 }
 
-div[id*="progress-bar"] {
+div[class*="-progress-bar"] {
   height: 100%;
   width: 0;
-  background-color: red;
+  background-color: #00f;
   border-radius: 20px;
-  transition: width .5s ease-in-out;
-}
-
-div:hover [id*="progress-bar"] {
-  width: 200px;
 }
 
 #dashboard h3 {

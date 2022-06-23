@@ -513,9 +513,9 @@ const usersFunctions = new (0, _users.Users)();
 const navigationFunctions = new (0, _navigation.Navigation)();
 window.onload = ()=>{
     window.location.hash = "login";
-    navigationFunctions.handleChanges();
     usersFunctions.init();
     loginFunctions.handleMenu();
+    navigationFunctions.handleChanges();
 };
 
 },{"./modules/Login":"eZHT5","./modules/Orders":"hakeO","./modules/Users":"2F8EQ","./modules/Navigation":"chRXV","./modules/Dashboard":"jPhRr"}],"eZHT5":[function(require,module,exports) {
@@ -656,6 +656,7 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Orders", ()=>Orders);
 var _users = require("./Users");
+var _dashboard = require("./Dashboard");
 const ProductName = {
     OversizedBlackShirt: "Oversized Black Shirt",
     OversizedWhiteShirt: "Oversized White Shirt",
@@ -672,6 +673,14 @@ const Icon = {
     TshirtBlack: "t-shirt",
     PantsWhite: "clothes-pants-sweat"
 };
+const mockOrder = {
+    name: ProductName.OversizedBlackShirt,
+    size: Size.XL,
+    daysLeft: 10,
+    checked: false,
+    icon: Icon.TshirtBlack,
+    deleted: false
+};
 const orders = [
     {
         id: "1",
@@ -679,7 +688,8 @@ const orders = [
         size: Size.XL,
         daysLeft: 10,
         checked: true,
-        icon: Icon.TshirtBlack
+        icon: Icon.TshirtBlack,
+        deleted: false
     },
     {
         id: "2",
@@ -687,7 +697,8 @@ const orders = [
         size: Size.XL,
         daysLeft: 10,
         checked: false,
-        icon: Icon.TshirtBlack
+        icon: Icon.TshirtBlack,
+        deleted: false
     },
     {
         id: "3",
@@ -695,7 +706,8 @@ const orders = [
         size: Size.XL,
         daysLeft: 15,
         checked: false,
-        icon: Icon.PantsWhite
+        icon: Icon.PantsWhite,
+        deleted: false
     },
     {
         id: "4",
@@ -703,7 +715,8 @@ const orders = [
         size: Size.L,
         daysLeft: 15,
         checked: false,
-        icon: Icon.TshirtBlack
+        icon: Icon.TshirtBlack,
+        deleted: false
     },
     {
         id: "5",
@@ -711,18 +724,23 @@ const orders = [
         size: Size.L,
         daysLeft: 20,
         checked: false,
-        icon: Icon.PantsWhite
+        icon: Icon.PantsWhite,
+        deleted: false
     }
 ];
 const ordersKey = "Orders";
 class Orders {
     users = new (0, _users.Users)();
+    // dashboard = new Dashboard();
     init() {
+        this.createList(this.setOrdersData());
+    }
+    setOrdersData() {
         let ordersToRender = orders;
         const savedOrders = JSON.parse(localStorage.getItem(ordersKey));
         if (!savedOrders || !savedOrders.length) localStorage.setItem(ordersKey, JSON.stringify(orders));
         else ordersToRender = JSON.parse(localStorage.getItem(ordersKey));
-        this.createList(ordersToRender);
+        return ordersToRender;
     }
     getOrdersData() {
         if (!localStorage.getItem(ordersKey)) {
@@ -730,50 +748,49 @@ class Orders {
             return "404 ERROR " + ordersKey;
         } else return JSON.parse(localStorage.getItem(ordersKey));
     }
-    putOrdersData() {
-        let mockOrder = {
-            name: ProductName.OversizedBlackShirt,
-            size: Size.XL,
-            daysLeft: 10,
-            checked: true,
-            icon: Icon.TshirtBlack
-        };
+    // add new order in local storage
+    putOrder(order) {
         let data = this.getOrdersData();
-        data.append(mockOrder);
-        localStorage.setItem(ordersKey, JSON.stringify(orders));
+        data.push(order);
+        localStorage.setItem(ordersKey, JSON.stringify(data));
         return this.getOrdersData();
     }
+    // set new orders list in local storage
     putOrders(orders1) {
         localStorage.setItem(ordersKey, JSON.stringify(orders1));
-        if (orders1 === this.getOrdersData()) return true;
-        return false;
+        return this.getOrdersData();
     }
     getFinishedOrdersRatio() {
         let data = this.getOrdersData();
         let finished = 0;
         let unfinished = 0;
-        data.forEach((item)=>{
+        data.filter((item)=>!item.deleted).forEach((item)=>{
             item.checked ? finished += 1 : unfinished += 1;
         });
         return finished / (finished + unfinished) * 100;
     }
-    handleCheckBoxClick(checkbox, order) {
+    handleCheckBoxClick(checkbox, order, ordersToRender) {
         checkbox.classList.toggle("checked");
+        order.checked = !order.checked;
+        this.createList(this.putOrders(ordersToRender));
+        // this.dashboard.setProgressBars();
+        this.setProgressBars();
     }
     // rendering function
     createList(ordersToRender) {
         const ordersList = document.querySelector("#orders-list");
         ordersList.innerHTML = "";
         const currentUser = this.users.getCurrentUser();
-        console.log("user", currentUser);
-        ordersToRender.map((order, key)=>{
+        // filter out orders with deleted flag
+        ordersToRender.filter((order)=>!order.deleted).map((order, key)=>{
             const checkbox = document.createElement("div");
             checkbox.classList.add("checkbox");
             checkbox.classList.toggle("checked", order.checked);
             checkbox.innerHTML = `<span class="iconify" data-icon="ant-design:check-circle-twotone"></span>`;
+            // set order as finished
             checkbox.addEventListener("click", ()=>{
-                console.log("checkbox clicked", order);
-                this.handleCheckBoxClick(checkbox, order);
+                // console.log('checkbox clicked', order);
+                this.handleCheckBoxClick(checkbox, order, ordersToRender);
             });
             const orderTemplate = `
                     <div class="icon">
@@ -791,19 +808,86 @@ class Orders {
                 const deleteButton = document.createElement("div");
                 deleteButton.classList.add("delete");
                 deleteButton.innerHTML = `<span class="iconify" data-icon="akar-icons:cross"></span>`;
+                // set order as deleted (only by admin)
                 deleteButton.addEventListener("click", ()=>{
-                    const validOrders = ordersToRender.filter((o)=>o.id !== order.id);
-                    this.putOrders(validOrders);
-                    this.createList(validOrders);
+                    // const validOrders = ordersToRender.filter(o => o.id !== order.id);
+                    order.deleted = true;
+                    this.createList(this.putOrders(ordersToRender));
+                    this.setProgressBars();
                 });
                 orderElement.append(deleteButton);
             }
             ordersList.append(orderElement);
         });
+        // render add button
+        if (currentUser.permissions === this.users.permissions.admin) {
+            const addButton = document.createElement("div");
+            addButton.classList.add("add");
+            // addButton.innerHTML = `<span class="iconify" data-icon="akar-icons:cross"></span>`;
+            addButton.innerHTML = `<span class="iconify" data-icon="carbon:add-filled"></span>`;
+            ordersList.appendChild(addButton);
+            addButton.addEventListener("click", ()=>{
+                this.createList(this.putOrder(mockOrder));
+                this.setProgressBars();
+            });
+        }
+    }
+    setProgressBars() {
+        let progressBars = document.querySelectorAll('[class*="orders-progress-bar"]');
+        let ratio = this.getFinishedOrdersRatio();
+        progressBars.forEach((item)=>{
+            item.style.transition = "width 0.5s ease-in-out";
+            item.style.width = `${ratio == 0 ? 2 : ratio}%`;
+            item.style.backgroundColor = ratio < 30 ? "red" : "green";
+        });
+    }
+    resetProgressBars() {
+        let progressBars = document.querySelectorAll('[class*="orders-progress-bar"]');
+        progressBars.forEach((item)=>{
+            item.style.transition = "none";
+            item.style.backgroundColor = "red";
+            item.style.width = `${0}%`;
+        });
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./Users":"2F8EQ"}],"chRXV":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./Users":"2F8EQ","./Dashboard":"jPhRr"}],"jPhRr":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Dashboard", ()=>Dashboard);
+var _orders = require("./Orders");
+class Dashboard {
+    ordersFunctions = new (0, _orders.Orders)();
+    getNode(n, v) {
+        n = document.createElementNS("http://www.w3.org/2000/svg", n);
+        for(var p in v)n.setAttributeNS(null, p.replace(/[A-Z]/g, function(m, p, o, s) {
+            return "-" + m.toLowerCase();
+        }), v[p]);
+        return n;
+    }
+    resetProgressBars() {
+        let progressBars = document.querySelectorAll('[class*="-dashboard-progress-bar"]');
+        progressBars.forEach((item)=>{
+            item.style.transition = "none";
+            item.style.backgroundColor = "red";
+            item.style.width = `${0}%`;
+        });
+    }
+    setProgressBars() {
+        let progressBars = document.querySelectorAll('[class*="-dashboard-progress-bar"]');
+        let ratio = 0;
+        progressBars.forEach((item)=>{
+            if (item.className === "deadlines-dashboard-progress-bar") ratio = 20;
+            if (item.className === "resources-dashboard-progress-bar") ratio = 85;
+            if (item.className === "orders-dashboard-progress-bar") ratio = this.ordersFunctions.getFinishedOrdersRatio();
+            item.style.transition = "width 0.5s ease-in-out";
+            item.style.width = `${ratio == 0 ? 2 : ratio}%`;
+            item.style.backgroundColor = ratio < 30 ? "red" : "green";
+        });
+    }
+}
+
+},{"./Orders":"hakeO","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"chRXV":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Navigation", ()=>Navigation);
@@ -817,16 +901,17 @@ class Navigation {
     dashboard = new (0, _dashboard.Dashboard)();
     orders = new (0, _orders.Orders)();
     handleChanges() {
+        this.orders.setOrdersData();
         // whole link changes
         // window.addEventListener('locationchange', function () {
         //     console.log('location changed!');
         // });
         // hash changes
         window.addEventListener("hashchange", (e)=>{
-            console.log("hash changed!", e.oldURL, e.newURL, typeof e.newURL);
+            // console.log('hash changed!', e.oldURL, e.newURL, typeof (e.newURL));
             this.handleMenu(e.newURL);
             this.handleDashboard(e.newURL);
-            if (e.newURL.includes("orders")) this.orders.init();
+            this.handleOrders(e.newURL);
         });
     }
     handleMenu(url) {
@@ -835,67 +920,21 @@ class Navigation {
     }
     handleDashboard(url) {
         if (url.includes("dashboard")) {
-            console.log("entered DASHBOARD!");
+            console.log("entering dashboard");
             this.dashboard.setProgressBars();
-        // this.dashboard.renderCharts();
-        } else this.dashboard.resetProgressBars();
+        } else {
+            console.log("exiting dashboard");
+            this.dashboard.resetProgressBars();
+        }
+    }
+    handleOrders(url) {
+        if (url.includes("orders")) {
+            this.orders.init();
+            this.orders.setProgressBars();
+        } else this.orders.resetProgressBars();
     }
 }
 
-},{"./Users":"2F8EQ","./Login":"eZHT5","./Dashboard":"jPhRr","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./Orders":"hakeO"}],"jPhRr":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Dashboard", ()=>Dashboard);
-var _orders = require("./Orders");
-class Dashboard {
-    ordersFunctions = new (0, _orders.Orders)();
-    renderCharts() {
-        console.log("rendering charts");
-        const container = document.querySelector("#svg-container-div");
-        var svg = this.getNode("svg");
-        container.appendChild(svg);
-        // var r = this.getNode('rect', {x: 10, y: 10, width: 100, height: 20, fill: '#ff00ff'});
-        // svg.appendChild(r);
-        var r = this.getNode("rect", {
-            x: 20,
-            y: 40,
-            width: 100,
-            height: 40,
-            rx: 8,
-            ry: 8,
-            fill: "pink",
-            stroke: "purple",
-            strokeWidth: 7
-        });
-        svg.appendChild(r);
-    }
-    getNode(n, v) {
-        n = document.createElementNS("http://www.w3.org/2000/svg", n);
-        for(var p in v)n.setAttributeNS(null, p.replace(/[A-Z]/g, function(m, p, o, s) {
-            return "-" + m.toLowerCase();
-        }), v[p]);
-        return n;
-    }
-    resetProgressBars() {
-        let progressBars = document.querySelectorAll('[id*="progress-bar"]');
-        progressBars.forEach((item)=>{
-            console.log(item);
-            item.style.backgroundColor = "red";
-        });
-    // progressBars.style.backgroundColor = "red"
-    }
-    setProgressBars() {
-        let progressBars = document.querySelectorAll('[id*="progress-bar"]');
-        let ratio = this.ordersFunctions.getFinishedOrdersRatio();
-        progressBars.forEach((item)=>{
-            console.log(item);
-            item.style.width = `${ratio}%`;
-            item.style.backgroundColor = ratio < 30 ? "red" : "green";
-        });
-    // progressBars.style.backgroundColor = "red"
-    }
-}
-
-},{"./Orders":"hakeO","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["5uAhr","8lRBv"], "8lRBv", "parcelRequiree6ef")
+},{"./Users":"2F8EQ","./Login":"eZHT5","./Dashboard":"jPhRr","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./Orders":"hakeO"}]},["5uAhr","8lRBv"], "8lRBv", "parcelRequiree6ef")
 
 //# sourceMappingURL=index.59a40e7a.js.map

@@ -1,1 +1,0 @@
-{"mappings":"AEAA","sources":["index.bad0f611.css","src/scss/app.scss","src/scss/modules/global.scss"],"sourcesContent":["body {\n  background: pink;\n}\n\n/*# sourceMappingURL=index.bad0f611.css.map */\n","@import \"modules/global\";\n","body {\n  background: pink;\n}\n"],"names":[],"version":3,"file":"index.bad0f611.css.map"}
